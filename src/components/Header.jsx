@@ -27,8 +27,7 @@ function Header() {
       <div className="header-inner">
         {/* Logo */}
         <Link to="/" className="header-logo" onClick={close}>
-          <span className="logo-icon">◈</span>
-          <span className="logo-text">LOGO</span>
+          <span className="logo-text">G-Mart</span>
         </Link>
 
         {/* Nav */}
