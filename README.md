@@ -1,4 +1,4 @@
-# G-Mart — React E-Commerce App
+<img width="1909" height="1077" alt="image" src="https://github.com/user-attachments/assets/cfebcd76-8d12-4b3b-ab61-5bbd34f6b64c" /># G-Mart — React E-Commerce App
 
 A fully functional e-commerce storefront built with **React**, powered by the [DummyJSON](https://dummyjson.com/) API.
 
@@ -26,8 +26,8 @@ A fully functional e-commerce storefront built with **React**, powered by the [D
 - Tabbed section: **Description · Additional Information · Reviews · Shipping & Returns**
 - **You may also like** — related products from the same category
 
-> **Screenshot preview:**
-> ![PDP Screenshot](https://i.imgur.com/placeholder.png)
+
+
 
 ### 🏪 Shop
 - Full product listing with search and category filter
