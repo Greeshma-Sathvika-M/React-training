@@ -1,70 +1,130 @@
-# Getting Started with Create React App
+# G-Mart — React E-Commerce App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A fully functional e-commerce storefront built with **React**, powered by the [DummyJSON](https://dummyjson.com/) API.
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## 🖥️ Pages & Features
 
-### `npm start`
+### 🏠 Home
+- Hero banner with promotions
+- Popular Products grid (Top Rated / Best Selling / Latest tabs)
+- Promo banner section
+- Service highlights (Free Shipping, Refund, Support, Payment)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### 🛍️ Product Detail Page (PDP)
+- **Route:** `/product/:id`
+- **API:** `GET https://dummyjson.com/products/{id}`
+- Breadcrumb navigation: Home › Shop › Category › Product
+- Vertical thumbnail strip + large main image viewer
+- Product title, star rating, review count, SKU
+- Price with original strikethrough and discount % badge
+- Stock status badge (In Stock / Low Stock)
+- Quantity stepper (− / +)
+- **Add to Cart** and **Add to Wishlist** buttons
+- Service badges: Free Shipping · Easy Returns · Secure Payment
+- Tabbed section: **Description · Additional Information · Reviews · Shipping & Returns**
+- **You may also like** — related products from the same category
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+> **Screenshot preview:**
+> ![PDP Screenshot](https://i.imgur.com/placeholder.png)
 
-### `npm test`
+### 🏪 Shop
+- Full product listing with search and category filter
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### 🛒 Cart
+- Add / remove items, quantity controls, order summary
 
-### `npm run build`
+### ❤️ Wishlist
+- Save products for later
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### 📦 Checkout & Order Success
+- Order form flow with success confirmation
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### 📝 Blog & 📞 Contact
+- Static informational pages
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+---
 
-### `npm run eject`
+## 🚀 Getting Started
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### Prerequisites
+- Node.js ≥ 16
+- npm
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Install & Run
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+```bash
+npm install
+npm start
+```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-## Learn More
+### Build for Production
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```bash
+npm run build
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+---
 
-### Code Splitting
+## 🗂️ Project Structure
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+```
+src/
+├── components/
+│   ├── Header.jsx / Header.css
+│   ├── Footer.jsx / Footer.css
+│   ├── Banner.jsx / Banner.css
+│   ├── ProductCard.jsx / ProductCard.css
+│   └── ProductList.jsx / ProductList.css
+├── pages/
+│   ├── Home.jsx
+│   ├── Shop.jsx
+│   ├── ProductDetail.jsx   ← PDP
+│   ├── Cart.jsx
+│   ├── Wishlist.jsx
+│   ├── Checkout.jsx
+│   ├── OrderSuccess.jsx
+│   ├── Blog.jsx
+│   └── Contact.jsx
+├── context/
+│   ├── CartContext.jsx
+│   └── WishlistContext.jsx
+└── App.jsx
+```
 
-### Analyzing the Bundle Size
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## 🔌 API
 
-### Making a Progressive Web App
+All product data is fetched from [https://dummyjson.com](https://dummyjson.com).
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+| Endpoint | Used for |
+|---|---|
+| `GET /products?limit=12` | Home & Shop product listing |
+| `GET /products/{id}` | Product Detail Page |
+| `GET /products/category/{category}` | Related products on PDP |
 
-### Advanced Configuration
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+## 🛠️ Tech Stack
 
-### Deployment
+| Technology | Purpose |
+|---|---|
+| React 18 | UI framework |
+| React Router v6 | Client-side routing |
+| Context API | Cart & Wishlist state |
+| CSS Modules (plain CSS) | Styling |
+| DummyJSON API | Mock product data |
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+---
 
-### `npm run build` fails to minify
+## 📜 Available Scripts
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+| Script | Description |
+|---|---|
+| `npm start` | Run in development mode |
+| `npm test` | Launch test runner |
+| `npm run build` | Production build |
