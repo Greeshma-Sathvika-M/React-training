@@ -33,7 +33,23 @@ A fully functional e-commerce storefront built with **React**, powered by the [D
 - Full product listing with search and category filter
 
 ### 🛒 Cart
-- Add / remove items, quantity controls, order summary
+- Add / remove items with **animated fade-out removal**
+- Quantity stepper per item (− / +)
+- **Save for Later** — moves any item to your Wishlist instantly
+- **Clear Cart** with inline confirmation prompt (prevents accidental wipes)
+- **Free-shipping progress bar** — animated gradient bar tracking progress toward the $120 free-shipping threshold
+- **Promo / Coupon codes** — enter a code in the summary panel to unlock discounts:
+
+  | Code | Effect |
+  |---|---|
+  | `SAVE10` | 10% off subtotal |
+  | `WELCOME20` | 20% off subtotal |
+  | `FREESHIP` | Free shipping |
+  | `FLAT5` | $5 flat discount |
+
+- **Discount line** shown in the order summary when a coupon is active
+- Tax recalculated on the post-discount subtotal
+- Sticky order summary sidebar on desktop
 
 ### ❤️ Wishlist
 - Save products for later
