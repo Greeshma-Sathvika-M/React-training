@@ -1,4 +1,4 @@
-<img width="1909" height="1077" alt="image" src="https://github.com/user-attachments/assets/cfebcd76-8d12-4b3b-ab61-5bbd34f6b64c" /># G-Mart — React E-Commerce App
+<img width="1893" height="1080" alt="image" src="https://github.com/user-attachments/assets/68cd2fb6-8a42-414d-9559-2e8e6d5c83ec" />
 
 A fully functional e-commerce storefront built with **React**, powered by the [DummyJSON](https://dummyjson.com/) API.
 
