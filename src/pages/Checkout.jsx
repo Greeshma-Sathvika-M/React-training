@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
 import './Checkout.css';
 
 const STEPS = ['Shipping', 'Payment', 'Review'];
 
 function Checkout() {
   const { items, totalPrice, clearCart } = useCart();
+  const { placeOrder } = useAuth();
   const navigate = useNavigate();
   const [step, setStep] = useState(0);
 
@@ -37,6 +39,12 @@ function Checkout() {
   const handlePayChange = e => setPayment(p => ({ ...p, [e.target.name]: e.target.value }));
 
   const handlePlaceOrder = () => {
+    const shippingInfo = {
+      name: `${shipping.firstName} ${shipping.lastName}`,
+      address: `${shipping.address}, ${shipping.city}, ${shipping.state} ${shipping.zip}`,
+      email: shipping.email,
+    };
+    placeOrder({ items, total: orderTotal, shipping: shippingInfo });
     clearCart();
     navigate('/order-success');
   };

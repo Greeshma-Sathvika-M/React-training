@@ -2,11 +2,13 @@ import React, { useState } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useWishlist } from '../context/WishlistContext';
+import { useAuth } from '../context/AuthContext';
 import './Header.css';
 
 function Header() {
   const { totalItems } = useCart();
   const { items: wishItems } = useWishlist();
+  const { user } = useAuth();
   const [search, setSearch] = useState('');
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
@@ -21,6 +23,10 @@ function Header() {
     }
     close();
   };
+
+  const avatarInitials = user
+    ? user.name.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase()
+    : null;
 
   return (
     <header className="site-header">
@@ -53,11 +59,20 @@ function Header() {
             </button>
           </form>
 
-          <button className="icon-btn" aria-label="Account">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
-            </svg>
-          </button>
+          <Link
+            to={user ? '/profile' : '/login'}
+            className="icon-btn account-btn"
+            onClick={close}
+            aria-label={user ? 'My Profile' : 'Sign In'}
+          >
+            {user ? (
+              <span className="header-avatar">{avatarInitials}</span>
+            ) : (
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+              </svg>
+            )}
+          </Link>
 
           <Link to="/wishlist" className="icon-btn wish-btn" aria-label="Wishlist">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
