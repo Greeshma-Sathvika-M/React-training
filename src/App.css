@@ -4,8 +4,8 @@
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  background: #f9f9f9;
-  color: #1f2933;
+  background: #f5f3ff;
+  color: #1e1b4b;
   line-height: 1.6;
 }
 
@@ -17,4 +17,17 @@ img { display: block; max-width: 100%; }
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+}
+
+/* ─── Theme Tokens ──────────────────────────────────────────── */
+:root {
+  --color-primary: #4f46e5;
+  --color-primary-light: #6366f1;
+  --color-primary-dark: #3730a3;
+  --color-accent: #f59e0b;
+  --color-bg: #f5f3ff;
+  --color-surface: #fff;
+  --color-border: #ede9fe;
+  --color-text: #1e1b4b;
+  --color-muted: #6b7280;
 }
