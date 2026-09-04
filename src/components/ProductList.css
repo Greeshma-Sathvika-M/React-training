@@ -1,7 +1,7 @@
 /* ── Product List Section ─────────────────────────────────────── */
 .product-list-section {
-  background: #141414;
-  padding: 48px 0 56px;
+  background: #fff;
+  padding: 40px 0 48px;
 }
 
 .pl-inner {
@@ -15,98 +15,51 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 20px;
+  margin-bottom: 28px;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 16px;
 }
 
-.pl-title-group {
+.pl-title {
   display: flex;
   align-items: center;
   gap: 12px;
-}
-.pl-title {
-  font-size: 1.3rem;
+  font-size: 1.25rem;
   font-weight: 700;
-  color: #fff;
+  color: #111;
   margin: 0;
-  letter-spacing: -0.01em;
 }
 .pl-accent-bar {
   display: inline-block;
   width: 4px;
-  height: 24px;
-  background: #e50914;
+  height: 22px;
+  background: #e03131;
   border-radius: 2px;
   flex-shrink: 0;
 }
 
-/* Sort buttons */
-.pl-sort-row {
+/* Tabs */
+.pl-tabs {
   display: flex;
   gap: 4px;
-  background: rgba(255,255,255,0.05);
-  border-radius: 4px;
-  padding: 4px;
 }
-.pl-sort-btn {
+.pl-tab {
   background: none;
   border: none;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   font-weight: 500;
-  color: #808080;
+  color: #888;
   cursor: pointer;
-  padding: 6px 12px;
-  border-radius: 3px;
-  transition: all 0.15s;
-  white-space: nowrap;
+  padding: 6px 14px;
+  border-radius: 6px;
+  transition: color 0.15s, background 0.15s;
 }
-.pl-sort-btn:hover { color: #e5e5e5; background: rgba(255,255,255,0.08); }
-.pl-sort-btn.active {
-  background: rgba(255,255,255,0.1);
-  color: #fff;
+.pl-tab:hover { color: #e03131; background: #fef0f0; }
+.pl-tab.active {
+  color: #e03131;
   font-weight: 700;
-}
-
-/* Category pills */
-.pl-category-pills {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  margin-bottom: 28px;
-}
-.pl-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: #1f1f1f;
-  border: 1px solid #404040;
-  font-size: 0.83rem;
-  font-weight: 500;
-  color: #b3b3b3;
-  cursor: pointer;
-  padding: 7px 16px;
-  border-radius: 3px;
-  transition: all 0.15s;
-  white-space: nowrap;
-}
-.pl-pill:hover {
-  border-color: #e50914;
-  color: #e5e5e5;
-  background: rgba(229,9,20,0.06);
-}
-.pl-pill.active {
-  background: #e50914;
-  color: #fff;
-  border-color: transparent;
-}
-.pl-pill-count {
-  background: rgba(255,255,255,0.2);
-  font-size: 0.7rem;
-  font-weight: 700;
-  padding: 1px 6px;
-  border-radius: 10px;
-  line-height: 1.4;
+  border-bottom: 2px solid #e03131;
+  border-radius: 0;
 }
 
 /* Grid */
@@ -123,61 +76,15 @@
   gap: 18px;
 }
 .pl-skeleton {
-  height: 290px;
-  border-radius: 4px;
-  background: linear-gradient(90deg, #1f1f1f 25%, #2d2d2d 50%, #1f1f1f 75%);
+  height: 260px;
+  border-radius: 10px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
   background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
+  animation: shimmer 1.4s infinite;
 }
 @keyframes shimmer {
   0%   { background-position: 200% 0; }
   100% { background-position: -200% 0; }
-}
-
-/* Empty state */
-.pl-empty {
-  text-align: center;
-  padding: 60px 20px;
-  color: #808080;
-  font-size: 0.9rem;
-}
-.pl-empty-btn {
-  margin-top: 12px;
-  padding: 10px 24px;
-  background: #e50914;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  font-size: 0.88rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.15s;
-}
-.pl-empty-btn:hover { background: #b20710; }
-
-/* Footer */
-.pl-footer {
-  display: flex;
-  justify-content: center;
-  margin-top: 36px;
-}
-.pl-view-all-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 13px 32px;
-  background: transparent;
-  border: 2px solid #e50914;
-  color: #e50914;
-  font-size: 0.9rem;
-  font-weight: 700;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: all 0.15s;
-}
-.pl-view-all-btn:hover {
-  background: #e50914;
-  color: #fff;
 }
 
 @media (max-width: 1024px) {
@@ -185,12 +92,7 @@
 }
 @media (max-width: 768px) {
   .pl-grid, .pl-loading { grid-template-columns: repeat(2, 1fr); }
-  .pl-header { gap: 10px; }
-  .pl-sort-row { flex-wrap: wrap; }
 }
 @media (max-width: 480px) {
-  .pl-grid, .pl-loading { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-  .pl-inner { padding: 0 12px; }
-  .pl-sort-btn { padding: 5px 8px; font-size: 0.75rem; }
-  .product-list-section { padding: 32px 0 40px; }
+  .pl-grid, .pl-loading { grid-template-columns: repeat(2, 1fr); gap: 12px; }
 }

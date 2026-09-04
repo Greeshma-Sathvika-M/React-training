@@ -75,9 +75,6 @@ function ProductCard({ product }) {
         </button>
       </div>
       <div className="pcard-body">
-        {product.category && (
-          <span className="pcard-category">{product.category}</span>
-        )}
         <Stars rating={product.rating} />
         <p className="pcard-name">{product.title}</p>
         <div className="pcard-price-row">

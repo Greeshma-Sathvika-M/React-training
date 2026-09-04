@@ -1,128 +1,104 @@
 /* ── Product Card ─────────────────────────────────────────────── */
 .pcard {
-  background: #1f1f1f;
-  border: 1px solid #333;
-  border-radius: 4px;
+  background: #fff;
+  border: 1px solid #ececec;
+  border-radius: 10px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  transition: transform 0.22s, border-color 0.22s;
+  transition: box-shadow 0.2s, transform 0.2s;
   cursor: pointer;
-  position: relative;
 }
 .pcard:hover {
-  transform: translateY(-4px) scale(1.02);
-  border-color: #e50914;
+  box-shadow: 0 6px 24px rgba(0,0,0,0.10);
+  transform: translateY(-3px);
 }
 
 .pcard-img-wrap {
   position: relative;
-  background: #2d2d2d;
+  background: #f8f8f8;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 20px;
-  height: 200px;
+  height: 190px;
   overflow: hidden;
 }
 .pcard-img {
   max-width: 100%;
-  max-height: 155px;
+  max-height: 150px;
   object-fit: contain;
   display: block;
-  transition: transform 0.25s;
+  transition: transform 0.2s;
 }
-.pcard:hover .pcard-img { transform: scale(1.06); }
+.pcard:hover .pcard-img { transform: scale(1.04); }
 
 .pcard-badge {
   position: absolute;
   top: 10px;
   left: 10px;
-  background: #e50914;
+  background: #e03131;
   color: #fff;
-  font-size: 0.66rem;
+  font-size: 0.68rem;
   font-weight: 700;
-  padding: 3px 9px;
-  border-radius: 3px;
+  padding: 3px 8px;
+  border-radius: 4px;
   z-index: 1;
-  letter-spacing: 0.03em;
 }
 
-/* Wishlist heart */
+/* Wishlist heart (top-left) */
 .pcard-wish-btn {
   position: absolute;
   top: 10px;
   left: 10px;
-  width: 32px;
-  height: 32px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
-  background: rgba(0,0,0,0.7);
-  border: 1px solid rgba(255,255,255,0.15);
+  background: #fff;
+  border: 1px solid #ddd;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   opacity: 0;
-  transform: translateY(5px);
-  transition: opacity 0.18s, transform 0.18s, color 0.15s, background 0.15s;
+  transform: translateY(4px);
+  transition: opacity 0.18s, transform 0.18s, color 0.15s;
   z-index: 2;
-  color: #808080;
-  backdrop-filter: blur(4px);
+  color: #ccc;
 }
 .pcard:hover .pcard-wish-btn { opacity: 1; transform: translateY(0); }
-.pcard-wish-btn:hover { color: #e50914; border-color: rgba(229,9,20,0.5); }
-.pcard-wish-btn.active {
-  color: #e50914;
-  border-color: rgba(229,9,20,0.5);
-  opacity: 1;
-  transform: translateY(0);
-}
+.pcard-wish-btn:hover { color: #e03131; border-color: #e03131; }
+.pcard-wish-btn.active { color: #e03131; border-color: #e03131; opacity: 1; transform: translateY(0); }
 
-/* Quick-add hover button */
+/* Quick-add hover button (top-right) */
 .pcard-quick-add {
   position: absolute;
   top: 10px;
   right: 10px;
-  width: 34px;
-  height: 34px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
-  background: rgba(0,0,0,0.7);
-  border: 1px solid rgba(255,255,255,0.15);
+  background: #fff;
+  border: 1px solid #ddd;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   opacity: 0;
-  transform: translateY(5px);
+  transform: translateY(4px);
   transition: opacity 0.18s, transform 0.18s, background 0.15s;
   z-index: 2;
-  color: #e5e5e5;
+  color: #333;
   font-size: 0.9rem;
   font-weight: 700;
-  backdrop-filter: blur(4px);
 }
 .pcard:hover .pcard-quick-add { opacity: 1; transform: translateY(0); }
-.pcard-quick-add:hover { background: #e50914; color: #fff; border-color: #e50914; }
-.pcard-quick-add.added { background: #46d369; color: #fff; border-color: #46d369; opacity: 1; transform: translateY(0); }
-
-/* Category chip at top of body */
-.pcard-category {
-  display: inline-block;
-  font-size: 0.65rem;
-  font-weight: 600;
-  color: #808080;
-  background: rgba(255,255,255,0.06);
-  border-radius: 3px;
-  padding: 2px 8px;
-  letter-spacing: 0.04em;
-  text-transform: capitalize;
-  margin-bottom: 4px;
-  align-self: flex-start;
-}
+.pcard-quick-add:hover { background: #111; color: #fff; border-color: #111; }
+.pcard-quick-add.added { background: #16a34a; color: #fff; border-color: #16a34a; opacity: 1; transform: translateY(0); }
 
 /* Card body */
 .pcard-body {
-  padding: 12px 14px 16px;
+  padding: 12px 14px 14px;
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -131,16 +107,16 @@
 
 /* Stars */
 .stars { display: flex; gap: 1px; }
-.star { font-size: 0.88rem; line-height: 1; }
-.star.filled { color: #e87c03; }
-.star.half   { color: #e87c03; opacity: 0.55; }
-.star.empty  { color: #404040; }
+.star { font-size: 0.9rem; line-height: 1; }
+.star.filled { color: #f5a623; }
+.star.half   { color: #f5a623; opacity: 0.6; }
+.star.empty  { color: #ddd; }
 
 .pcard-name {
   margin: 2px 0 0;
-  font-size: 0.85rem;
+  font-size: 0.84rem;
   font-weight: 500;
-  color: #e5e5e5;
+  color: #333;
   line-height: 1.4;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -149,31 +125,22 @@
   flex: 1;
 }
 
-.pcard-price-row { display: flex; align-items: center; gap: 8px; margin-top: 4px; }
-.pcard-price {
-  font-size: 1rem;
-  font-weight: 700;
-  color: #fff;
-}
+.pcard-price-row { display: flex; align-items: center; gap: 8px; margin-top: 2px; }
+.pcard-price { font-size: 0.95rem; font-weight: 700; color: #111; }
 
-/* Add to Cart button */
+/* Add to Cart button on card */
 .pcard-add-btn {
-  margin-top: 10px;
-  padding: 9px 0;
-  background: #e50914;
+  margin-top: 8px;
+  padding: 8px 0;
+  background: #111;
   color: #fff;
   border: none;
-  border-radius: 3px;
+  border-radius: 7px;
   font-size: 0.82rem;
-  font-weight: 700;
+  font-weight: 600;
   cursor: pointer;
   transition: background 0.15s;
   width: 100%;
-  letter-spacing: 0.02em;
 }
-.pcard-add-btn:hover:not(.added) {
-  background: #b20710;
-}
-.pcard-add-btn.added {
-  background: #46d369;
-}
+.pcard-add-btn:hover { background: #333; }
+.pcard-add-btn.added { background: #16a34a; }
