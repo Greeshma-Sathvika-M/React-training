@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import './Profile.css';
@@ -363,7 +363,8 @@ function AddressBook({ user, updateProfile }) {
    ORDERS
    ══════════════════════════════════════════════════════════ */
 function Orders({ user }) {
-  const orders = user.orders?.length > 0 ? [...user.orders].reverse() : [];
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const orders = user.orders?.length > 0 ? [...user.orders] : [];
 
   const statusMeta = s => {
     if (s === 'Delivered')  return { cls: 'pf-badge-green',  icon: '✓' };
@@ -405,42 +406,87 @@ function Orders({ user }) {
         <div className="pf-orders-list">
           {orders.map(o => {
             const { cls, icon } = statusMeta(o.status);
+            const isExpanded = selectedOrder === o.id;
             return (
-              <div key={o.id} className="pf-order-row">
-                <div className="pf-order-icon-wrap">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-                    <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
-                    <line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/>
-                  </svg>
-                </div>
-                <div className="pf-order-main">
-                  <div className="pf-order-top-row">
-                    <span className="pf-order-num">{o.id}</span>
-                    <span className={`pf-badge ${cls}`}>{icon} {o.status}</span>
+              <div key={o.id} style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <div
+                  className="pf-order-row"
+                  style={{ cursor: 'pointer' }}
+                  onClick={() => setSelectedOrder(isExpanded ? null : o.id)}
+                >
+                  <div className="pf-order-icon-wrap">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                      <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+                      <line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/>
+                    </svg>
                   </div>
-                  <div className="pf-order-meta-row">
-                    <span className="pf-order-meta-item">
-                      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-                        <line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/>
-                        <line x1="3" y1="10" x2="21" y2="10"/>
-                      </svg>
-                      {new Date(o.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-                    </span>
-                    <span className="pf-order-meta-dot">·</span>
-                    <span className="pf-order-meta-item">
-                      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/>
-                        <line x1="10" y1="12" x2="14" y2="12"/>
-                      </svg>
-                      {o.items} item{o.items !== 1 ? 's' : ''}
-                    </span>
+                  <div className="pf-order-main">
+                    <div className="pf-order-top-row">
+                      <span className="pf-order-num">{o.id}</span>
+                      <span className={`pf-badge ${cls}`}>{icon} {o.status}</span>
+                    </div>
+                    <div className="pf-order-meta-row">
+                      <span className="pf-order-meta-item">
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                          <line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/>
+                          <line x1="3" y1="10" x2="21" y2="10"/>
+                        </svg>
+                        {new Date(o.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                      </span>
+                      <span className="pf-order-meta-dot">·</span>
+                      <span className="pf-order-meta-item">
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/>
+                          <line x1="10" y1="12" x2="14" y2="12"/>
+                        </svg>
+                        {o.items} item{o.items !== 1 ? 's' : ''}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="pf-order-total-col">
+                    <span className="pf-order-total-val">${o.total.toFixed(2)}</span>
+                    <span className="pf-order-total-label">{isExpanded ? '▲ Details' : '▼ Details'}</span>
                   </div>
                 </div>
-                <div className="pf-order-total-col">
-                  <span className="pf-order-total-val">${o.total.toFixed(2)}</span>
-                  <span className="pf-order-total-label">Total</span>
-                </div>
+
+                {isExpanded && (
+                  <div style={{
+                    background: '#f8fafc',
+                    borderRadius: '12px',
+                    padding: '16px 20px',
+                    border: '1px solid #e2e8f0',
+                    margin: '-4px 0 12px 0'
+                  }}>
+                    {o.shipping && (
+                      <p style={{ margin: '0 0 6px 0', fontSize: '0.82rem', color: '#64748b' }}>
+                        <strong>Ship To:</strong> {o.shipping.firstName} {o.shipping.lastName} — {o.shipping.address}, {o.shipping.city} {o.shipping.zip}
+                      </p>
+                    )}
+                    {o.paymentDetails?.type && (
+                      <p style={{ margin: '0 0 12px 0', fontSize: '0.82rem', color: '#0369a1' }}>
+                        <strong>Payment Method:</strong> {o.paymentDetails.type}
+                        {o.paymentDetails.cardLast4 ? ` (ending in ${o.paymentDetails.cardLast4})` : ''}
+                        {o.paymentDetails.paypalEmail ? ` (${o.paymentDetails.paypalEmail})` : ''}
+                        {o.paymentDetails.upiId ? ` (${o.paymentDetails.upiId})` : ''}
+                      </p>
+                    )}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                      {o.itemDetails?.map((it, idx) => (
+                        <div key={idx} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '0.86rem' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                            {it.thumbnail && (
+                              <img src={it.thumbnail} alt={it.title} style={{ width: '32px', height: '32px', objectFit: 'cover', borderRadius: '6px' }} />
+                            )}
+                            <span style={{ fontWeight: 600, color: '#1e293b' }}>{it.title}</span>
+                            <span style={{ color: '#64748b' }}>× {it.qty}</span>
+                          </div>
+                          <span style={{ fontWeight: 700, color: '#0f172a' }}>${(it.price * it.qty).toFixed(2)}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             );
           })}
@@ -605,10 +651,11 @@ function Profile() {
   const navigate = useNavigate();
   const [section, setSection] = useState('overview');
 
-  if (!user) {
-    navigate('/login', { replace: true });
-    return null;
-  }
+  useEffect(() => {
+    if (!user) navigate('/login', { replace: true });
+  }, [user, navigate]);
+
+  if (!user) return null;
 
   const handleLogout = () => {
     logout();
