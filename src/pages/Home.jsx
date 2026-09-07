@@ -55,15 +55,15 @@ function Home() {
       <section className="promo-banner-section">
         <div className="promo-inner">
           <div className="promo-content">
-            <p className="promo-eyebrow">Apple iPhone 12 Pro</p>
-            <h2 className="promo-title">The wait is on:<br />iphon 12 max pro</h2>
-            <p className="promo-sub">Last call for up to <strong>32% off!</strong></p>
-            <a href="#shop" className="promo-btn">Buy Now →</a>
+            <p className="promo-eyebrow">Flash Promo Special</p>
+            <h2 className="promo-title">Apple iPhone 15 Pro Max Titanium</h2>
+            <p className="promo-sub">Use coupon code <strong style={{ color: '#2563eb', background: '#eff6ff', padding: '2px 8px', borderRadius: '4px' }}>SAVE10</strong> for an instant <strong>10% off!</strong></p>
+            <a href="/shop" className="promo-btn">Explore Deals →</a>
           </div>
           <div className="promo-img-wrap">
             <img
               src="https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=400&q=80"
-              alt="iPhone 12 Pro"
+              alt="iPhone Promo"
               className="promo-img"
             />
           </div>

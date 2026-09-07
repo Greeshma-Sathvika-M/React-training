@@ -80,8 +80,9 @@ function Login() {
             className={`auth-tab ${tab === 'register' ? 'active' : ''}`}
             onClick={() => { setTab('register'); setRegError(''); }}
           >Create Account</button>
-        </div>
+        </div>  
 
+  
         {/* ── Login Form ──────────────────────────────── */}
         {tab === 'login' && (
           <form className="auth-form" onSubmit={handleLogin} noValidate>

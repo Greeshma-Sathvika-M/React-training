@@ -84,12 +84,14 @@ export function AuthProvider({ children }) {
     return { ok: true };
   }, [user]);
 
-  const placeOrder = useCallback(({ items, total, shipping }) => {
+  const placeOrder = useCallback(({ items, total, shipping, paymentMethod, paymentDetails }) => {
     const order = {
       id: 'ORD-' + Date.now().toString(36).toUpperCase(),
       date: new Date().toISOString(),
-      status: 'Processing',
+      status: paymentMethod === 'cod' ? 'Confirmed (Cash on Delivery)' : 'Processing',
       total,
+      paymentMethod: paymentMethod || 'card',
+      paymentDetails: paymentDetails || {},
       items: items.length,
       itemDetails: items.map(i => ({
         id: i.id,

@@ -4,6 +4,8 @@ const CartContext = createContext(null);
 
 const COUPONS = {
   SAVE10:    { type: 'percent',  value: 10,   label: '10% off' },
+  DEAL10:    { type: 'percent',  value: 10,   label: '10% off' },
+  DISCOUNT10:{ type: 'percent',  value: 10,   label: '10% off' },
   WELCOME20: { type: 'percent',  value: 20,   label: '20% off' },
   FREESHIP:  { type: 'shipping', value: 0,    label: 'Free shipping' },
   FLAT5:     { type: 'flat',     value: 5,    label: '$5 off' },
