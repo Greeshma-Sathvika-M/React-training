@@ -1,4 +1,5 @@
-<img width="1877" height="1075" alt="image" src="https://github.com/user-attachments/assets/d30f9820-e63b-41ac-b597-f27f49127bd6" />
+<img width="1896" height="1085" alt="image" src="https://github.com/user-attachments/assets/22709cfb-439e-4c4a-8008-bfd81114faf4" />
+
 
 
 A fully functional e-commerce storefront built with **React**, powered by the [DummyJSON](https://dummyjson.com/) API.
