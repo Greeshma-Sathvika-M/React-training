@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 import './Login.css';
 
 function Login() {
@@ -11,11 +11,13 @@ function Login() {
   /* ── Login state ─────────────────────────────────── */
   const [loginData, setLoginData] = useState({ email: '', password: '' });
   const [loginError, setLoginError] = useState('');
+  const [loginLoading, setLoginLoading] = useState(false);
   const [showLoginPw, setShowLoginPw] = useState(false);
 
   /* ── Register state ──────────────────────────────── */
   const [regData, setRegData] = useState({ name: '', email: '', password: '', confirm: '' });
   const [regError, setRegError] = useState('');
+  const [regLoading, setRegLoading] = useState(false);
   const [showRegPw, setShowRegPw] = useState(false);
   const [regSuccess, setRegSuccess] = useState(false);
 
@@ -31,19 +33,21 @@ function Login() {
   const handleRegChange = e =>
     setRegData(p => ({ ...p, [e.target.name]: e.target.value }));
 
-  const handleLogin = e => {
+  const handleLogin = async e => {
     e.preventDefault();
     setLoginError('');
     if (!loginData.email || !loginData.password) {
       setLoginError('Please fill in all fields.');
       return;
     }
-    const result = login(loginData);
+    setLoginLoading(true);
+    const result = await login(loginData);
+    setLoginLoading(false);
     if (!result.ok) { setLoginError(result.error); return; }
     navigate('/profile');
   };
 
-  const handleRegister = e => {
+  const handleRegister = async e => {
     e.preventDefault();
     setRegError('');
     if (!regData.name || !regData.email || !regData.password || !regData.confirm) {
@@ -58,7 +62,9 @@ function Login() {
       setRegError('Passwords do not match.');
       return;
     }
-    const result = register({ name: regData.name, email: regData.email, password: regData.password });
+    setRegLoading(true);
+    const result = await register({ name: regData.name, email: regData.email, password: regData.password });
+    setRegLoading(false);
     if (!result.ok) { setRegError(result.error); return; }
     setRegSuccess(true);
     setTimeout(() => navigate('/profile'), 900);
@@ -132,7 +138,9 @@ function Login() {
               </div>
             </div>
 
-            <button type="submit" className="auth-btn-primary">Sign In</button>
+            <button type="submit" className="auth-btn-primary" disabled={loginLoading}>
+              {loginLoading ? 'Signing in…' : 'Sign In'}
+            </button>
 
             <p className="auth-switch">
               Don't have an account?{' '}
@@ -229,8 +237,8 @@ function Login() {
               )}
             </div>
 
-            <button type="submit" className="auth-btn-primary" disabled={regSuccess}>
-              {regSuccess ? 'Account created!' : 'Create Account'}
+            <button type="submit" className="auth-btn-primary" disabled={regLoading || regSuccess}>
+              {regSuccess ? 'Account created!' : regLoading ? 'Creating account…' : 'Create Account'}
             </button>
 
             <p className="auth-switch">

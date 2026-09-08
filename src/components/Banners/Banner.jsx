@@ -10,7 +10,7 @@ const DEALS = [
     price: '$299.99',
     originalPrice: '$399.99',
     discount: '25% OFF',
-    promoCode: 'SAVE10',
+    promoCode: 'SAVE25',
     img: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=700&q=80',
     theme: 'linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4338ca 100%)',
     accent: '#818cf8',
@@ -24,7 +24,7 @@ const DEALS = [
     price: '$679.00',
     originalPrice: '$799.00',
     discount: '15% OFF',
-    promoCode: 'SAVE10',
+    promoCode: 'SAVE15',
     img: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=700&q=80',
     theme: 'linear-gradient(135deg, #064e3b 0%, #065f46 50%, #047857 100%)',
     accent: '#34d399',
@@ -38,7 +38,7 @@ const DEALS = [
     price: '$1,999.00',
     originalPrice: '$2,499.00',
     discount: '20% OFF',
-    promoCode: 'SAVE10',
+    promoCode: 'WELCOME20',
     img: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=700&q=80',
     theme: 'linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%)',
     accent: '#38bdf8',
@@ -52,7 +52,7 @@ const DEALS = [
     price: '$54.99',
     originalPrice: '$74.99',
     discount: '26% OFF',
-    promoCode: 'SAVE10',
+    promoCode: 'FLAT20',
     img: 'https://images.unsplash.com/photo-1598550476439-6847785fcea6?w=700&q=80',
     theme: 'linear-gradient(135deg, #701a75 0%, #86198f 50%, #a21caf 100%)',
     accent: '#f472b6',
@@ -525,12 +525,12 @@ function Banner() {
                 <div
                   className="hero-promo-coupon"
                   onClick={(e) => handleCopyCode(deal.promoCode, e)}
-                  title="Click to copy promo code for 10% OFF"
+                  title={`Click to copy promo code ${deal.promoCode}`}
                 >
                   <span>🎟️ Promo:</span>
                   <span className="promo-code-badge">{deal.promoCode}</span>
                   <span className="promo-copy-hint">
-                    {copiedCode ? '✓ Copied (10% OFF)!' : 'Copy Code'}
+                    {copiedCode ? '✓ Copied!' : 'Copy Code'}
                   </span>
                 </div>
               </div>

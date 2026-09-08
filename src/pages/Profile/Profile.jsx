@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 import './Profile.css';
 
 /* ── Nav config with icons ──────────────────────────────── */
@@ -77,10 +77,21 @@ function Avatar({ name, size = 'md' }) {
 /* ══════════════════════════════════════════════════════════
    OVERVIEW
    ══════════════════════════════════════════════════════════ */
-function Overview({ user, setSection }) {
-  const orderCount  = user.orders?.length ?? 0;
-  const totalSpend  = (user.orders ?? []).reduce((s, o) => s + (o.total || 0), 0);
-  const hasAddress  = !!(user.address && user.city);
+function Overview({ user, orders, setSection }) {
+  const orderCount = orders.length;
+  const totalSpend = orders.reduce((s, o) => s + (o.total || 0), 0);
+  const hasAddress = !!(user.address && user.city);
+  const latestOrder = orders[0] ?? null;
+
+  const memberSince = user.created_at || user.createdAt;
+
+  const statusColor = s => {
+    if (s?.includes('Delivered'))  return '#16a34a';
+    if (s?.includes('Shipped'))    return '#2563eb';
+    if (s?.includes('Processing')) return '#d97706';
+    if (s?.includes('Cash'))       return '#7c3aed';
+    return '#6b7280';
+  };
 
   return (
     <div className="pf-section">
@@ -107,14 +118,16 @@ function Overview({ user, setSection }) {
               {user.phone}
             </p>
           )}
-          <p className="pf-since">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-              <line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/>
-              <line x1="3" y1="10" x2="21" y2="10"/>
-            </svg>
-            Member since {new Date(user.createdAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
-          </p>
+          {memberSince && (
+            <p className="pf-since">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                <line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/>
+                <line x1="3" y1="10" x2="21" y2="10"/>
+              </svg>
+              Member since {new Date(memberSince).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+            </p>
+          )}
         </div>
         <button className="pf-edit-quick-btn" onClick={() => setSection('edit')}>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -127,7 +140,7 @@ function Overview({ user, setSection }) {
 
       {/* Stats strip */}
       <div className="pf-stats-strip">
-        <div className="pf-stat" onClick={() => setSection('orders')}>
+        <div className="pf-stat" style={{ cursor: 'pointer' }} onClick={() => setSection('orders')}>
           <span className="pf-stat-value">{orderCount}</span>
           <span className="pf-stat-label">Orders</span>
         </div>
@@ -137,11 +150,63 @@ function Overview({ user, setSection }) {
           <span className="pf-stat-label">Total Spent</span>
         </div>
         <div className="pf-stat-divider" />
-        <div className="pf-stat" onClick={() => setSection('address')}>
+        <div className="pf-stat" style={{ cursor: 'pointer' }} onClick={() => setSection('address')}>
           <span className="pf-stat-value">{hasAddress ? 1 : 0}</span>
           <span className="pf-stat-label">Addresses</span>
         </div>
       </div>
+
+      {/* Latest order banner */}
+      {latestOrder && (
+        <div
+          style={{
+            background: '#f0fdf4',
+            border: '1px solid #bbf7d0',
+            borderRadius: '12px',
+            padding: '14px 18px',
+            marginBottom: '24px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: '12px',
+            flexWrap: 'wrap',
+            cursor: 'pointer',
+          }}
+          onClick={() => setSection('orders')}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <div style={{
+              width: '36px', height: '36px', borderRadius: '50%',
+              background: '#dcfce7', display: 'flex', alignItems: 'center', justifyContent: 'center',
+            }}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2.2">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </div>
+            <div>
+              <p style={{ margin: 0, fontWeight: 700, fontSize: '0.875rem', color: '#15803d' }}>
+                Latest Order Placed
+              </p>
+              <p style={{ margin: 0, fontSize: '0.78rem', color: '#6b7280' }}>
+                {latestOrder.id} · {new Date(latestOrder.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+              </p>
+            </div>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+            <span style={{
+              fontSize: '0.75rem', fontWeight: 600, padding: '3px 10px',
+              borderRadius: '999px', background: '#dcfce7',
+              color: statusColor(latestOrder.status),
+            }}>
+              {latestOrder.status}
+            </span>
+            <span style={{ fontWeight: 700, fontSize: '0.9rem', color: '#0f172a' }}>
+              ${Number(latestOrder.total).toFixed(2)}
+            </span>
+            <span style={{ color: '#9ca3af', fontSize: '0.8rem' }}>View →</span>
+          </div>
+        </div>
+      )}
 
       {/* Quick action cards */}
       <p className="pf-cards-heading">Quick Actions</p>
@@ -212,11 +277,11 @@ function EditProfile({ user, updateProfile }) {
 
   const handle = e => setForm(p => ({ ...p, [e.target.name]: e.target.value }));
 
-  const submit = e => {
+  const submit = async e => {
     e.preventDefault();
     setError(''); setSuccess('');
     if (!form.name || !form.email) { setError('Name and email are required.'); return; }
-    const result = updateProfile({ name: form.name, email: form.email, phone: form.phone });
+    const result = await updateProfile({ name: form.name, email: form.email, phone: form.phone });
     if (!result.ok) { setError(result.error); return; }
     setSuccess('Profile updated successfully!');
   };
@@ -280,9 +345,9 @@ function AddressBook({ user, updateProfile }) {
   const [success, setSuccess] = useState('');
 
   const handle = e => setForm(p => ({ ...p, [e.target.name]: e.target.value }));
-  const submit = e => {
+  const submit = async e => {
     e.preventDefault();
-    updateProfile(form);
+    await updateProfile(form);
     setSuccess('Address saved successfully!');
   };
 
@@ -362,9 +427,13 @@ function AddressBook({ user, updateProfile }) {
 /* ══════════════════════════════════════════════════════════
    ORDERS
    ══════════════════════════════════════════════════════════ */
-function Orders({ user }) {
+function Orders({ getOrders }) {
   const [selectedOrder, setSelectedOrder] = useState(null);
-  const orders = user.orders?.length > 0 ? [...user.orders] : [];
+  const [orders, setOrders] = useState([]);
+
+  useEffect(() => {
+    getOrders().then(o => setOrders(o || []));
+  }, [getOrders]);
 
   const statusMeta = s => {
     if (s === 'Delivered')  return { cls: 'pf-badge-green',  icon: '✓' };
@@ -499,7 +568,7 @@ function Orders({ user }) {
 /* ══════════════════════════════════════════════════════════
    CHANGE PASSWORD
    ══════════════════════════════════════════════════════════ */
-function ChangePassword({ user }) {
+function ChangePassword({ changePassword }) {
   const [form, setForm]   = useState({ current: '', next: '', confirm: '' });
   const [show, setShow]   = useState({ current: false, next: false, confirm: false });
   const [error, setError] = useState('');
@@ -521,15 +590,9 @@ function ChangePassword({ user }) {
   const strengthColor = ['', '#ef4444', '#f97316', '#eab308', '#22c55e'];
   const pwStrength = strength(form.next);
 
-  const submit = e => {
+  const submit = async e => {
     e.preventDefault();
     setError(''); setSuccess('');
-    const users  = JSON.parse(localStorage.getItem('gmart_users') || '[]');
-    const stored = users.find(u => u.id === user.id);
-    if (!stored || stored.password !== form.current) {
-      setError('Current password is incorrect.');
-      return;
-    }
     if (form.next.length < 6) {
       setError('New password must be at least 6 characters.');
       return;
@@ -538,9 +601,8 @@ function ChangePassword({ user }) {
       setError('New passwords do not match.');
       return;
     }
-    const idx = users.findIndex(u => u.id === user.id);
-    users[idx].password = form.next;
-    localStorage.setItem('gmart_users', JSON.stringify(users));
+    const result = await changePassword({ currentPassword: form.current, newPassword: form.next });
+    if (!result.ok) { setError(result.error); return; }
     setSuccess('Password changed successfully!');
     setForm({ current: '', next: '', confirm: '' });
   };
@@ -647,22 +709,30 @@ function ChangePassword({ user }) {
    MAIN PROFILE PAGE
    ══════════════════════════════════════════════════════════ */
 function Profile() {
-  const { user, logout, updateProfile } = useAuth();
+  const { user, logout, updateProfile, changePassword, getOrders } = useAuth();
   const navigate = useNavigate();
   const [section, setSection] = useState('overview');
+  const [orders, setOrders] = useState([]);
 
   useEffect(() => {
     if (!user) navigate('/login', { replace: true });
   }, [user, navigate]);
 
+  // Re-fetch orders whenever section changes so overview + orders tab always show fresh data
+  useEffect(() => {
+    if (user && getOrders) {
+      getOrders().then(o => setOrders(o || []));
+    }
+  }, [user, getOrders, section]);
+
   if (!user) return null;
+
+  const orderCount = orders.length;
 
   const handleLogout = () => {
     logout();
     navigate('/');
   };
-
-  const orderCount = user.orders?.length ?? 0;
 
   return (
     <div className="pf-page">
@@ -713,11 +783,11 @@ function Profile() {
 
         {/* ── Content ────────────────────────────────── */}
         <main className="pf-content">
-          {section === 'overview' && <Overview  user={user} setSection={setSection} />}
+          {section === 'overview' && <Overview user={user} orders={orders} setSection={setSection} />}
           {section === 'edit'     && <EditProfile user={user} updateProfile={updateProfile} />}
           {section === 'address'  && <AddressBook user={user} updateProfile={updateProfile} />}
-          {section === 'orders'   && <Orders user={user} />}
-          {section === 'password' && <ChangePassword user={user} />}
+          {section === 'orders'   && <Orders getOrders={getOrders} />}
+          {section === 'password' && <ChangePassword changePassword={changePassword} />}
         </main>
 
       </div>

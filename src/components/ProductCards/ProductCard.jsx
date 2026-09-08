@@ -1,37 +1,50 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useCart } from '../context/CartContext';
-import { useWishlist } from '../context/WishlistContext';
+import { useCart } from '../../context/CartContext';
+import { useWishlist } from '../../context/WishlistContext';
 
+// ── Stars: uses map() over a fixed-length array to build star spans ──────────
 function Stars({ rating }) {
   const full = Math.floor(rating);
   const half = rating - full >= 0.5;
+
+  // map over [0,1,2,3,4] and classify each position
+  const starSlots = [0, 1, 2, 3, 4].map(i => {
+    if (i < full)            return { key: i, cls: 'star filled' };
+    if (i === full && half)  return { key: i, cls: 'star half'   };
+    return                          { key: i, cls: 'star empty'  };
+  });
+
   return (
     <span className="stars" aria-label={`${rating} stars`}>
-      {Array.from({ length: 5 }, (_, i) => {
-        if (i < full) return <span key={i} className="star filled">★</span>;
-        if (i === full && half) return <span key={i} className="star half">★</span>;
-        return <span key={i} className="star empty">★</span>;
-      })}
+      {starSlots.map(s => <span key={s.key} className={s.cls}>★</span>)}
     </span>
   );
 }
 
-function ProductCard({ product }) {
-  const { addToCart } = useCart();
+function ProductCard({ product, isTopPick = false }) {
+  const { addToCart, items } = useCart();
   const { toggleWishlist, isWishlisted } = useWishlist();
-  const navigate = useNavigate();
+  const navigate  = useNavigate();
   const [added, setAdded] = useState(false);
   const wishlisted = isWishlisted(product.id);
 
-  const handleAdd = (e) => {
+  // ── find: check whether this product is already in the cart ──────────────
+  const inCart = items.find(i => i.id === product.id);
+
+  // ── reduce: total qty of this product already in cart ────────────────────
+  const cartQty = items
+    .filter(i => i.id === product.id)
+    .reduce((sum, i) => sum + i.qty, 0);
+
+  const handleAdd = e => {
     e.stopPropagation();
     addToCart(product);
     setAdded(true);
     setTimeout(() => setAdded(false), 1800);
   };
 
-  const handleWishlist = (e) => {
+  const handleWishlist = e => {
     e.stopPropagation();
     toggleWishlist(product);
   };
@@ -190,10 +203,18 @@ function ProductCard({ product }) {
           box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3);
         }
       `}</style>
-      <div className="pcard" onClick={() => navigate(`/product/${product.id}`)}>
+      <div
+        className="pcard"
+        onClick={() => navigate(`/product/${product.id}`)}
+        style={isTopPick ? { outline: '2px solid #2563eb', outlineOffset: '2px' } : {}}
+      >
         <div className="pcard-img-wrap">
-          {product.discountPercentage > 10 && (
-            <span className="pcard-badge">-{Math.round(product.discountPercentage)}%</span>
+          {/* savingPct was pre-computed via map() in ProductList */}
+          {(product.savingPct ?? 0) > 10 && (
+            <span className="pcard-badge">-{product.savingPct}%</span>
+          )}
+          {isTopPick && (
+            <span className="pcard-badge" style={{ background: '#2563eb', left: 'auto', right: 12 }}>⭐ Top Pick</span>
           )}
           <img
             src={product.thumbnail}
@@ -217,11 +238,17 @@ function ProductCard({ product }) {
           <div className="pcard-price-row">
             <span className="pcard-price">${product.price.toFixed(2)}</span>
           </div>
+          {/* show in-cart qty only if reduce found qty > 0 */}
+          {cartQty > 0 && (
+            <p style={{ margin: '2px 0 0', fontSize: '0.75rem', color: '#2563eb', fontWeight: 600 }}>
+              {cartQty} in cart
+            </p>
+          )}
           <button
             className={`pcard-add-btn ${added ? 'added' : ''}`}
             onClick={handleAdd}
           >
-            {added ? '✓ Added to Cart' : '+ Add to Cart'}
+            {added ? '✓ Added to Cart' : inCart ? '+ Add More' : '+ Add to Cart'}
           </button>
         </div>
       </div>

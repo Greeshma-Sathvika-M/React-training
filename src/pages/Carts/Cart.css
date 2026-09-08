@@ -302,6 +302,40 @@
 .coupon-msg.ok { color: #16a34a; background: #f0fdf4; }
 .coupon-msg.err { color: #dc2626; background: #fff5f5; }
 
+.coupon-suggestions {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.coupon-sugg-title {
+  font-size: 0.75rem;
+  color: #64748b;
+  font-weight: 500;
+}
+.coupon-sugg-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.coupon-chip {
+  background: #f1f5f9;
+  border: 1px dashed #cbd5e1;
+  color: #1e293b;
+  font-family: monospace;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.coupon-chip:hover {
+  background: #e2e8f0;
+  border-color: #94a3b8;
+  color: #0f172a;
+}
+
 .coupon-applied {
   margin-top: 14px;
   border-top: 1px solid #f0f0f0;

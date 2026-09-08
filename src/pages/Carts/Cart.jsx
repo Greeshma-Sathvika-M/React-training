@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useCart } from '../context/CartContext';
-import { useWishlist } from '../context/WishlistContext';
+import { useCart } from '../../context/CartContext';
+import { useWishlist } from '../../context/WishlistContext';
 import './Cart.css';
 
 function FreeShippingBar({ totalPrice, threshold = 120 }) {
@@ -52,6 +52,8 @@ function CouponBox({ coupon, applyCoupon, removeCoupon }) {
     );
   }
 
+  const popularCodes = ['SAVE10', 'WELCOME20', 'MEGA30', 'FLAT20', 'FREESHIP'];
+
   return (
     <div className="coupon-box">
       <div className="coupon-input-row">
@@ -65,6 +67,28 @@ function CouponBox({ coupon, applyCoupon, removeCoupon }) {
         <button className="coupon-apply-btn" onClick={handleApply}>Apply</button>
       </div>
       {msg && <p className={`coupon-msg ${msg.ok ? 'ok' : 'err'}`}>{msg.text}</p>}
+      <div className="coupon-suggestions">
+        <span className="coupon-sugg-title">Available codes:</span>
+        <div className="coupon-sugg-chips">
+          {popularCodes.map((code) => (
+            <button
+              key={code}
+              type="button"
+              className="coupon-chip"
+              onClick={() => {
+                setInput(code);
+                const res = applyCoupon(code);
+                setMsg(res.ok
+                  ? { ok: true, text: `✓ "${code}" applied — ${res.label}` }
+                  : { ok: false, text: res.error }
+                );
+              }}
+            >
+              {code}
+            </button>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

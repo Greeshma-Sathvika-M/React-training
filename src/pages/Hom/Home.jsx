@@ -1,6 +1,6 @@
 import React from 'react';
-import Banner from '../components/Banner';
-import ProductList from '../components/ProductList';
+import Banner from '../../components/Banners/Banner';
+import ProductList from '../../components/ProductLists/ProductList';
 import './Home.css';
 
 const SERVICES = [

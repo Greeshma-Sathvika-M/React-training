@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import ProductCard from './ProductCard';
+import ProductCard from '../ProductCards/ProductCard';
 
 const TABS = ['Top Rated', 'Best Selling', 'Latest Products'];
 
@@ -9,20 +9,44 @@ function ProductList() {
   const [activeTab, setActiveTab] = useState('Top Rated');
 
   useEffect(() => {
-    fetch('https://dummyjson.com/products?limit=12&skip=0')
+    fetch('https://dummyjson.com/products?limit=20&skip=0')
       .then(r => r.json())
       .then(data => {
-        setProducts(data.products || []);
+        // ── filter: drop any product missing a title or thumbnail ──────────
+        const valid = (data.products || []).filter(p => p.title && p.thumbnail);
+
+        // ── map: add a `savingPct` field for display convenience ───────────
+        const enriched = valid.map(p => ({
+          ...p,
+          savingPct: p.discountPercentage > 0 ? Math.round(p.discountPercentage) : 0,
+        }));
+
+        // ── reduce: compute total stock across all fetched products ────────
+        const totalStock = enriched.reduce((sum, p) => sum + (p.stock || 0), 0);
+        console.info(`[ProductList] fetched ${enriched.length} products — total stock: ${totalStock} units`);
+
+        // ── forEach: warn in console for any out-of-stock items ───────────
+        enriched.forEach(p => {
+          if (p.stock === 0) console.warn(`[ProductList] out of stock: "${p.title}"`);
+        });
+
+        setProducts(enriched);
         setLoading(false);
       })
       .catch(() => setLoading(false));
   }, []);
 
-  const displayed = [...products].sort((a, b) => {
-    if (activeTab === 'Top Rated') return b.rating - a.rating;
-    if (activeTab === 'Best Selling') return b.stock - a.stock;
-    return b.id - a.id;
-  });
+  // ── sort + slice: each tab applies a different comparator then takes 8 ──
+  const displayed = [...products]
+    .sort((a, b) => {
+      if (activeTab === 'Top Rated')     return b.rating - a.rating;
+      if (activeTab === 'Best Selling')  return b.stock  - a.stock;
+      return b.id - a.id; // Latest Products
+    })
+    .slice(0, 8);
+
+  // ── find: highlight the single highest-rated product in this tab ─────────
+  const topPick = displayed.find(p => p.rating === Math.max(...displayed.map(p => p.rating)));
 
   return (
     <>
@@ -154,8 +178,13 @@ function ProductList() {
             </div>
           ) : (
             <div className="pl-grid">
+              {/* map: render one ProductCard per product */}
               {displayed.map(product => (
-                <ProductCard key={product.id} product={product} />
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  isTopPick={topPick && product.id === topPick.id}
+                />
               ))}
             </div>
           )}

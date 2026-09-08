@@ -3,12 +3,21 @@ import React, { createContext, useContext, useState } from 'react';
 const CartContext = createContext(null);
 
 const COUPONS = {
+  SAVE5:     { type: 'percent',  value: 5,    label: '5% off' },
   SAVE10:    { type: 'percent',  value: 10,   label: '10% off' },
   DEAL10:    { type: 'percent',  value: 10,   label: '10% off' },
   DISCOUNT10:{ type: 'percent',  value: 10,   label: '10% off' },
+  SAVE15:    { type: 'percent',  value: 15,   label: '15% off' },
   WELCOME20: { type: 'percent',  value: 20,   label: '20% off' },
+  SAVE25:    { type: 'percent',  value: 25,   label: '25% off' },
+  MEGA30:    { type: 'percent',  value: 30,   label: '30% off' },
+  SUPER50:   { type: 'percent',  value: 50,   label: '50% off' },
   FREESHIP:  { type: 'shipping', value: 0,    label: 'Free shipping' },
   FLAT5:     { type: 'flat',     value: 5,    label: '$5 off' },
+  FLAT10:    { type: 'flat',     value: 10,   label: '$10 off' },
+  FLAT20:    { type: 'flat',     value: 20,   label: '$20 off' },
+  FLAT50:    { type: 'flat',     value: 50,   label: '$50 off' },
+  FLAT100:   { type: 'flat',     value: 100,  label: '$100 off' },
 };
 
 export function CartProvider({ children }) {

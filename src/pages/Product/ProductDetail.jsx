@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useCart } from '../context/CartContext';
-import { useWishlist } from '../context/WishlistContext';
+import { useCart } from '../../context/CartContext';
+import { useWishlist } from '../../context/WishlistContext';
 import './ProductDetail.css';
 
 /* ── Star renderer ──────────────────────────────────────── */
@@ -60,29 +60,55 @@ function ProductDetail() {
   const [activeTab, setActiveTab]   = useState('description');
   const thumbsRef                   = useRef(null);
 
-  /* fetch product */
+  /* fetch product + related */
   useEffect(() => {
     setLoading(true);
     setActiveImg(0);
     setQty(1);
     window.scrollTo({ top: 0, behavior: 'smooth' });
+
     fetch(`https://dummyjson.com/products/${id}`)
       .then(r => r.json())
       .then(data => {
-        setProduct(data);
+        // ── map: normalise images array — filter out broken URLs then map to trimmed strings ──
+        const images = (data.images || [])
+          .filter(url => typeof url === 'string' && url.startsWith('http'))
+          .map(url => url.trim());
+        setProduct({ ...data, images: images.length ? images : [data.thumbnail] });
         setLoading(false);
+
         /* fetch related by category */
         if (data.category) {
-          fetch(`https://dummyjson.com/products/category/${encodeURIComponent(data.category)}?limit=5`)
+          fetch(`https://dummyjson.com/products/category/${encodeURIComponent(data.category)}?limit=8`)
             .then(r => r.json())
-            .then(d => setRelated((d.products || []).filter(p => p.id !== data.id).slice(0, 4)));
+            .then(d => {
+              // ── filter: exclude current product ──────────────────────────
+              const others = (d.products || []).filter(p => p.id !== data.id);
+
+              // ── map: attach savingPct to each related card ────────────────
+              const enriched = others.map(p => ({
+                ...p,
+                savingPct: Math.round(p.discountPercentage || 0),
+              }));
+
+              // ── reduce: find highest-rated among related ──────────────────
+              const bestRated = enriched.reduce(
+                (best, p) => (p.rating > best.rating ? p : best),
+                enriched[0] ?? {}
+              );
+              console.info(`[ProductDetail] best related: "${bestRated.title}" (${bestRated.rating}★)`);
+
+              // ── slice: keep max 4 ─────────────────────────────────────────
+              setRelated(enriched.slice(0, 4));
+            });
         }
       })
       .catch(() => setLoading(false));
   }, [id]);
 
   const handleAddToCart = () => {
-    for (let i = 0; i < qty; i++) addToCart(product);
+    // forEach alternative: add the product `qty` times
+    Array.from({ length: qty }).forEach(() => addToCart(product));
     setAdded(true);
     setTimeout(() => setAdded(false), 2000);
   };
@@ -357,18 +383,32 @@ function ProductDetail() {
             {activeTab === 'reviews' && (
               <div className="pdp-reviews-wrap">
                 {product.reviews?.length > 0 ? (
-                  <div className="pdp-reviews-grid">
-                    {product.reviews.map((r, i) => (
-                      <div key={i} className="pdp-review-card">
-                        <div className="pdp-review-top">
-                          <span className="pdp-reviewer">{r.reviewerName}</span>
-                          <Stars rating={r.rating} size="sm" />
+                  <>
+                    {/* reduce: compute average rating across all reviews */}
+                    {(() => {
+                      const avg = product.reviews.reduce((s, r) => s + r.rating, 0) / product.reviews.length;
+                      return (
+                        <p style={{ margin: '0 0 16px', fontSize: '0.88rem', color: '#64748b' }}>
+                          Average rating: <strong style={{ color: '#f59e0b' }}>
+                            {avg.toFixed(1)} ★
+                          </strong> from {product.reviews.length} review{product.reviews.length > 1 ? 's' : ''}
+                        </p>
+                      );
+                    })()}
+                    <div className="pdp-reviews-grid">
+                      {/* map: render each review card */}
+                      {product.reviews.map((r, i) => (
+                        <div key={i} className="pdp-review-card">
+                          <div className="pdp-review-top">
+                            <span className="pdp-reviewer">{r.reviewerName}</span>
+                            <Stars rating={r.rating} size="sm" />
+                          </div>
+                          <p className="pdp-review-comment">{r.comment}</p>
+                          <p className="pdp-review-date">{new Date(r.date).toLocaleDateString()}</p>
                         </div>
-                        <p className="pdp-review-comment">{r.comment}</p>
-                        <p className="pdp-review-date">{new Date(r.date).toLocaleDateString()}</p>
-                      </div>
-                    ))}
-                  </div>
+                      ))}
+                    </div>
+                  </>
                 ) : (
                   <p className="pdp-no-reviews">No reviews yet.</p>
                 )}

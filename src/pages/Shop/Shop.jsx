@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { useCart } from '../context/CartContext';
-import { useWishlist } from '../context/WishlistContext';
+import { useCart } from '../../context/CartContext';
+import { useWishlist } from '../../context/WishlistContext';
 import './Shop.css';
 
 const CATEGORIES = ['All', 'smartphones', 'laptops', 'fragrances', 'skincare', 'groceries', 'home-decoration', 'furniture', 'tops', 'womens-dresses', 'womens-shoes', 'mens-shirts', 'mens-shoes', 'mens-watches', 'womens-watches', 'womens-bags', 'womens-jewellery', 'sunglasses', 'automotive', 'motorcycle', 'lighting'];
@@ -29,11 +29,11 @@ function Shop() {
   const PER_PAGE = 12;
 
   const category = searchParams.get('category') || 'All';
-  const q = searchParams.get('q') || '';
-  const sort = searchParams.get('sort') || 'default';
+  const q        = searchParams.get('q')        || '';
+  const sort     = searchParams.get('sort')     || 'default';
 
   const [search, setSearch] = useState(q);
-  const [added, setAdded] = useState({});
+  const [added,  setAdded]  = useState({});
 
   useEffect(() => {
     setLoading(true);
@@ -46,18 +46,46 @@ function Shop() {
     } else {
       url = `https://dummyjson.com/products?limit=${PER_PAGE}&skip=${skip}`;
     }
+
     fetch(url)
       .then(r => r.json())
-      .then(data => { setProducts(data.products || []); setTotal(data.total || 0); setLoading(false); })
+      .then(data => {
+        // ── filter: keep only products that have a thumbnail (safe guard) ──
+        const valid = (data.products || []).filter(p => p.thumbnail);
+
+        // ── forEach: normalise discountPercentage to a number on every item ──
+        valid.forEach(p => { p.discountPercentage = Number(p.discountPercentage) || 0; });
+
+        // ── map: attach a computed `originalPrice` field to every product ──
+        const enriched = valid.map(p => ({
+          ...p,
+          originalPrice: p.discountPercentage > 0
+            ? (p.price / (1 - p.discountPercentage / 100))
+            : null,
+        }));
+
+        setProducts(enriched);
+        setTotal(data.total || 0);
+        setLoading(false);
+      })
       .catch(() => setLoading(false));
   }, [category, q, page]);
 
+  // ── sort with .sort() (uses a comparator built on the sort param) ──────────
   const sorted = [...products].sort((a, b) => {
-    if (sort === 'price-asc') return a.price - b.price;
-    if (sort === 'price-desc') return b.price - a.price;
-    if (sort === 'rating') return b.rating - a.rating;
+    if (sort === 'price-asc')  return a.price  - b.price;
+    if (sort === 'price-desc') return b.price  - a.price;
+    if (sort === 'rating')     return b.rating - a.rating;
     return 0;
   });
+
+  // ── reduce: total value of products currently shown (shown in count bar) ──
+  const shownValue = sorted.reduce((sum, p) => sum + p.price, 0);
+
+  // ── find: cheapest product in current page (highlighted in grid) ──────────
+  const cheapest = sorted.length
+    ? sorted.reduce((min, p) => (p.price < min.price ? p : min), sorted[0])
+    : null;
 
   const handleSearch = e => {
     e.preventDefault();
@@ -65,7 +93,7 @@ function Shop() {
     setSearchParams(search.trim() ? { q: search.trim() } : {});
   };
 
-  const handleCategory = (cat) => {
+  const handleCategory = cat => {
     setPage(1);
     setSearch('');
     setSearchParams(cat === 'All' ? {} : { category: cat });
@@ -87,7 +115,16 @@ function Shop() {
         <div className="shop-topbar">
           <div className="shop-topbar-left">
             <h1 className="shop-title">Shop</h1>
-            {!loading && <span className="shop-count">{total} products</span>}
+            {!loading && (
+              <span className="shop-count">
+                {total} products
+                {sorted.length > 0 && (
+                  <span style={{ fontWeight: 400, color: '#94a3b8', marginLeft: 8 }}>
+                    · page value ${shownValue.toFixed(0)}
+                  </span>
+                )}
+              </span>
+            )}
           </div>
           <div className="shop-topbar-right">
             <form className="shop-search-form" onSubmit={handleSearch}>
@@ -152,6 +189,10 @@ function Shop() {
                         {product.discountPercentage > 10 && (
                           <span className="shop-card-badge">-{Math.round(product.discountPercentage)}%</span>
                         )}
+                        {/* find: mark the cheapest product on the page */}
+                        {cheapest && product.id === cheapest.id && (
+                          <span className="shop-card-badge" style={{ background: '#16a34a', top: 'auto', bottom: 12 }}>Best Price</span>
+                        )}
                         <img src={product.thumbnail} alt={product.title} loading="lazy" />
                         <button
                           className={`shop-wish-btn ${isWishlisted(product.id) ? 'active' : ''}`}
@@ -169,8 +210,9 @@ function Shop() {
                         <p className="shop-card-name">{product.title}</p>
                         <div className="shop-card-price-row">
                           <span className="shop-card-price">${product.price.toFixed(2)}</span>
-                          {product.discountPercentage > 0 && (
-                            <span className="shop-card-orig">${(product.price / (1 - product.discountPercentage / 100)).toFixed(0)}</span>
+                          {/* use pre-computed originalPrice from the map() enrichment above */}
+                          {product.originalPrice && (
+                            <span className="shop-card-orig">${product.originalPrice.toFixed(0)}</span>
                           )}
                         </div>
                         <button
