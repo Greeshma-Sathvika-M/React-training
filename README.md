@@ -87,33 +87,6 @@ npm run build
 
 ---
 
-## 🗂️ Project Structure
-
-```
-src/
-├── components/
-│   ├── Header.jsx / Header.css
-│   ├── Footer.jsx / Footer.css
-│   ├── Banner.jsx / Banner.css
-│   ├── ProductCard.jsx / ProductCard.css
-│   └── ProductList.jsx / ProductList.css
-├── pages/
-│   ├── Home.jsx
-│   ├── Shop.jsx
-│   ├── ProductDetail.jsx   ← PDP
-│   ├── Cart.jsx
-│   ├── Wishlist.jsx
-│   ├── Checkout.jsx
-│   ├── OrderSuccess.jsx
-│   ├── Blog.jsx
-│   └── Contact.jsx
-├── context/
-│   ├── CartContext.jsx
-│   └── WishlistContext.jsx
-└── App.jsx
-```
-
----
 
 ## 🔌 API
 
